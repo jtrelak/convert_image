@@ -74,6 +74,12 @@ do
     log "rounds=$rounds"
     log "rest=$rest"
 
+    function gamma {
+        log "gamma $1 --> $2"
+        convert $1 -gamma 1.8 $2;
+        if [ $? -gt 0 ]; then log "error (gamma), exiting"; exit 1; fi
+    }
+
     function norm {
         log "normalizing $1 --> $2"
         convert $1 -normalize $2;
@@ -83,7 +89,7 @@ do
     function tojpeg {
         log "compressing $1 --> $2"
         convert $1 -compress jpeg -quality 50 $2;
-        if [ $? -gt 0 ]; then log "error (compressing), exiting"; exit 1; fi
+         if [ $? -gt 0 ]; then log "error (compressing), exiting"; exit 1; fi
     }
 
     #rounds
@@ -91,7 +97,8 @@ do
     do
         for (( i=0; i<$(( 10 )); i++ ))
         do
-            norm ${file_list[$(( $j*10+$i ))]} tmp/$(( $j*10+$i )).png
+            gamma ${file_list[$(( $j*10+$i ))]} tmp/$(( $j*10+$i )).png
+            norm tmp/$(( $j*10+$i )).png tmp/$(( $j*10+$i )).png
             tojpeg tmp/$(( $j*10+$i )).png tmp/$(( $j*10+$i )).jpeg
         done
         #generate pdf
@@ -103,7 +110,8 @@ do
     #rest
     for (( i=0; i<$(( $rest )); i++ ))
     do
-        norm ${file_list[$(( $rounds*10+$i ))]} tmp/$(( $rounds*10+$i )).png
+        gamma ${file_list[$(( $rounds*10+$i ))]} tmp/$(( $rounds*10+$i )).png
+        norm tmp/$(( $rounds*10+$i )).png tmp/$(( $rounds*10+$i )).png
         tojpeg tmp/$(( $rounds*10+$i )).png tmp/$(( $rounds*10+$i )).jpeg
     done
 
