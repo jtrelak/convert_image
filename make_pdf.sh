@@ -76,7 +76,7 @@ do
 
     function gamma {
         log "gamma $1 --> $2"
-        convert $1 -gamma 1.8 $2;
+        convert $1 -brightness-contrast -10x60 $2;
         if [ $? -gt 0 ]; then log "error (gamma), exiting"; exit 1; fi
     }
 
